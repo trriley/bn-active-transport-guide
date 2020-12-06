@@ -19,6 +19,11 @@
     accessToken: accessToken
   }).addTo(map);
 
+  // AJAX request for GeoJSON data
+  $.getJSON("data/counts.geojson", function (data) {
+    drawMap(data);
+  });
+
   // create Leaflet control for the legend
   const legendControl = L.control({
     position: 'bottomright'
@@ -43,12 +48,46 @@
 
 
   function drawMap(data) {
+    const counters = L.geoJSON(data, {
+      pointToLayer: function (feature, ll) {
+        return L.circleMarker(ll, {
+          color: '#653279',
+          opacity: 1,
+          weight: 2
+        })
+      }
+    }).addTo(map);
+
+    // fit the bounds of the map to the counters
+    map.fitBounds(counters.getBounds());
+
     // adjust zoom level of map
     map.setZoom(map.getZoom() - .4);
+
+    resizeCircles(counters, "11_2020");
+
   }
 
   function drawLegend(data) {
+
     // empty array to hold values
     const dataValues = [];
+
+  }
+
+  function calcRadius(val) {
+
+    const radius = Math.sqrt(val / Math.PI);
+    return radius * 1; // adjust number as a scale factor
+    
+  }
+
+  function resizeCircles(counters, currentMonth) {
+
+    counters.eachLayer(function (layer) {
+      const radius = calcRadius(Number(layer.feature.properties[currentMonth]));
+      layer.setRadius(radius);
+    });
+
   }
 })();
