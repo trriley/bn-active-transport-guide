@@ -1,0 +1,12 @@
+{
+"type": "FeatureCollection",
+"name": "parks",
+"crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:OGC:1.3:CRS84" } },
+"features": [
+{ "type": "Feature", "properties": { "name": "Hidden Creek Nature Sanctuary" }, "geometry": { "type": "Point", "coordinates": [ -88.985883426444218, 40.517478137908434 ] } },
+{ "type": "Feature", "properties": { "name": "One Normal Plaza" }, "geometry": { "type": "Point", "coordinates": [ -88.974061068007245, 40.519062680679411 ] } },
+{ "type": "Feature", "properties": { "name": "Anderson Park" }, "geometry": { "type": "Point", "coordinates": [ -88.976467784375984, 40.509492538736993 ] } },
+{ "type": "Feature", "properties": { "name": "Fairview Park" }, "geometry": { "type": "Point", "coordinates": [ -88.998637984493584, 40.522605951279907 ] } },
+{ "type": "Feature", "properties": { "name": "Tipton Park (South Entrance)" }, "geometry": { "type": "Point", "coordinates": [ -88.92773079857092, 40.504246243566534 ] } }
+]
+}
