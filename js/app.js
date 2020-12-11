@@ -9,7 +9,7 @@
     maxBounds: L.latLngBounds([40.2, -89.2], [40.7, -88.7])
   });
 
-  const accessToken = 'pk.eyJ1IjoidHJyaWxlMSIsImEiOiJjanVlNGg5aXMwcDF0NDNyeXg4Y3Axc2t0In0.yioavWI-uixNmFWr2piy6Q';
+  const accessToken = 'pk.eyJ1IjoidHJyaWxlMSIsImEiOiJja2ljOWtranEwM2xvMnhrODVpcjZuM2t4In0.l8PybKD_NV7k9Fv4LaXOVQ';
 
   // request a mapbox raster tile layer and add to map
   L.tileLayer('https://api.mapbox.com/styles/v1/trrile1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
@@ -33,6 +33,11 @@
   // load parks
   $.getJSON("data/parks.geojson", function (data) {
     drawParks(data);
+  });
+
+  const landmarkIcon = L.icon({
+    iconUrl: 'icons/noun_landmark_2181603_green.svg',
+    iconSize: [30, 30]
   });
 
   // create Leaflet control for the legend
@@ -83,6 +88,8 @@
       const popupInfo = `<b>${props["name"]}</b><br>${props["11_2020"]}`;
       layer.bindPopup(popupInfo);
     });
+
+    sequenceUI(counters);
 
   }
 
@@ -165,18 +172,77 @@
       layer.setRadius(radius);
     });
 
+    // update slider label with current month
+    // TODO need to translate into something more readable
+    $("#slider-label").html(`${currentMonth}`)
+
+  }
+
+  function sequenceUI(counters) {
+
+    // use Set object instead of array to avoid duplicate values
+    const monthValues = new Set();
+
+    counters.eachLayer(function (layer) {
+      for (prop in layer.feature.properties) {
+        if (prop != 'name') {
+          monthValues.add(prop);
+        }
+      }
+    });
+
+    console.log([...monthValues])
+
+    // create Leaflet control for the slider
+    const sliderControl = L.control({
+      position: 'bottomleft'
+    });
+
+    sliderControl.onAdd = function (map) {
+
+      const controls = L.DomUtil.get("slider");
+
+      L.DomEvent.disableScrollPropagation(controls);
+      L.DomEvent.disableClickPropagation(controls);
+
+      return controls;
+
+    }
+
+    // add it to the map
+    sliderControl.addTo(map);
+
+    // select the slider's input and listen for change
+    $('#slider input[type=range]')
+      .on('input', function () {
+
+        console.log(this.value);
+
+        // current value of slider is current month
+        let sliderInput = +this.value;
+
+        // hacky solution to limit input to only 12 most recent months
+        if (monthValues.size > 12) {
+          sliderInput += (monthValues.size - 12);
+        }
+
+        const currentMonth = [...monthValues][sliderInput - 1];
+        console.log(currentMonth)
+
+        // resize the circles with updated month
+        resizeCircles(counters, currentMonth);
+      });
+
   }
 
   function drawParks(data) {
-    // need to add popup and mouseover affordance
+    // TODO need to add popup and mouseover affordance
     // also add in addtl information to geojson file to
     // populate popup
     const parks = L.geoJSON(data, {
       pointToLayer: function (feature, ll) {
-        return L.circleMarker(ll, {
-          color: '#658D1B',
-          fillOpacity: 1,
-          radius: 5
+        return L.marker(ll, {
+          icon: landmarkIcon
         });
       }
     }).addTo(map);
@@ -190,7 +256,10 @@
   }
 
   function drawFacilities(data) {
-    // need to separate facilities based on type
+    // TODO need to separate facilities based on type
+    // and symbolize accordingly
+    // additionally, it may make sense to make them appear only at certain
+    // zoom levels
     const facilities = L.geoJSON(data, {
       pointToLayer: function (feature, ll) {
         return L.circleMarker(ll, {
@@ -200,5 +269,13 @@
         });
       }
     }).addTo(map);
+
+    // add tooltip
+    facilities.eachLayer(function (layer) {
+      const props = layer.feature.properties;
+      // console.log(props);
+      const popupInfo = `<b>${props["type"]}</b>`;
+      layer.bindPopup(popupInfo);
+    });
   }
 })();
