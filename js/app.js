@@ -9,15 +9,20 @@
     maxBounds: L.latLngBounds([40.2, -89.2], [40.7, -88.7])
   });
 
-  const accessToken = 'pk.eyJ1IjoidHJyaWxlMSIsImEiOiJja2ljOWtranEwM2xvMnhrODVpcjZuM2t4In0.l8PybKD_NV7k9Fv4LaXOVQ';
+  const accessToken = 'pk.eyJ1IjoidHJyaWxlMSIsImEiOiJjanVlNGg5aXMwcDF0NDNyeXg4Y3Axc2t0In0.yioavWI-uixNmFWr2piy6Q';
 
   // request a mapbox raster tile layer and add to map
-  L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+  L.tileLayer('https://api.mapbox.com/styles/v1/trrile1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
     maxZoom: 18,
-    id: 'light-v10',
+    id: 'ckhjhn6zt009g19qwjrvcve0p',
     accessToken: accessToken
   }).addTo(map);
+
+  // load facilities
+  $.getJSON("data/facilities.geojson", function (data) {
+    drawFacilities(data);
+  });
 
   // load counters
   $.getJSON("data/counts.geojson", function (data) {
@@ -28,16 +33,6 @@
   // load parks
   $.getJSON("data/parks.geojson", function (data) {
     drawParks(data);
-  });
-
-  // load trails
-  $.getJSON("data/trails.geojson", function (data) {
-    drawTrails(data);
-  });
-
-  // load facilities
-  $.getJSON("data/facilities.geojson", function (data) {
-    drawFacilities(data);
   });
 
   // create Leaflet control for the legend
@@ -82,6 +77,13 @@
 
     resizeCircles(counters, "11_2020");
 
+    // add tooltip
+    counters.eachLayer(function (layer) {
+      const props = layer.feature.properties;
+      const popupInfo = `<b>${props["name"]}</b><br>${props["11_2020"]}`;
+      layer.bindPopup(popupInfo);
+    });
+
   }
 
   function drawLegend(data) {
@@ -110,7 +112,7 @@
 
     // calc the diameters
     const largeDiameter = calcRadius(maxValue) * 2,
-        smallDiameter = largeDiameter / 2;
+          smallDiameter = largeDiameter / 2;
 
     // select our circles container and set the height
     $(".legend-circles").css('height', largeDiameter.toFixed());
@@ -178,15 +180,13 @@
         });
       }
     }).addTo(map);
-  }
 
-  function drawTrails(data) {
-    // need to separate trails based on type
-    // and add tooltip? or just legend entry
-    console.log(data);
-    const trails = L.geoJSON(data, {
-
-    }).addTo(map);
+    // add tooltip
+    parks.eachLayer(function (layer) {
+      const props = layer.feature.properties;
+      const popupInfo = `<b>${props["name"]}</b>`;
+      layer.bindPopup(popupInfo);
+    });
   }
 
   function drawFacilities(data) {
