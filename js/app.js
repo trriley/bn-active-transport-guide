@@ -172,7 +172,7 @@
 
     // update slider label with current month
     // TODO need to translate into something more readable
-    $("#slider-label").html(`${currentMonth}`)
+    $("#slider-label").html(`${expandDate(currentMonth)}`)
 
   }
 
@@ -243,9 +243,20 @@
       if (!value) {
         value = "Unavailable"
       }
+      value = value.toLocaleString('default', { maximumFractionDigits: 0 });
       const popupInfo = `<b>${props["name"]}</b><br>Monthly average: ${value}`;
       layer.bindPopup(popupInfo);
     });
+  }
+
+  function expandDate(currentMonth) {
+    // console.log(currentMonth);
+    const currentMonthSplit = currentMonth.split('_');
+    // console.log(currentMonthSplit[1], currentMonthSplit[0], 1);
+    const currentMonthDate = new Date(currentMonthSplit[1], (currentMonthSplit[0]-1))
+    // console.log(currentMonthDate);
+    console.log(currentMonthDate.toLocaleString('default', { month: 'short', year: '2-digit' }));
+    return currentMonthDate.toLocaleString('default', { month: 'short', year: 'numeric' });
   }
 
   function drawParks(data) {
