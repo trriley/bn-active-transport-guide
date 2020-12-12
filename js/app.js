@@ -11,6 +11,9 @@
 
   const accessToken = 'pk.eyJ1IjoidHJyaWxlMSIsImEiOiJja2ljOWtranEwM2xvMnhrODVpcjZuM2t4In0.l8PybKD_NV7k9Fv4LaXOVQ';
 
+  // define currentMonth as a global variable
+  let currentMonth = '11_2020';
+
   // request a mapbox raster tile layer and add to map
   L.tileLayer('https://api.mapbox.com/styles/v1/trrile1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
@@ -80,17 +83,12 @@
     // adjust zoom level of map
     map.setZoom(map.getZoom() - .4);
 
-    resizeCircles(counters, "11_2020");
-
-    // add tooltip
-    counters.eachLayer(function (layer) {
-      const props = layer.feature.properties;
-      const popupInfo = `<b>${props["name"]}</b><br>${props["11_2020"]}`;
-      layer.bindPopup(popupInfo);
-    });
+    resizeCircles(counters);
 
     sequenceUI(counters);
 
+    // add tooltip
+    makeCounterTooltip(counters);
   }
 
   function drawLegend(data) {
@@ -165,7 +163,7 @@
 
   }
 
-  function resizeCircles(counters, currentMonth) {
+  function resizeCircles(counters) {
 
     counters.eachLayer(function (layer) {
       const radius = calcRadius(Number(layer.feature.properties[currentMonth]));
@@ -191,7 +189,7 @@
       }
     });
 
-    console.log([...monthValues])
+    // console.log([...monthValues])
 
     // create Leaflet control for the slider
     const sliderControl = L.control({
@@ -216,7 +214,7 @@
     $('#slider input[type=range]')
       .on('input', function () {
 
-        console.log(this.value);
+        // console.log(this.value);
 
         // current value of slider is current month
         let sliderInput = +this.value;
@@ -226,13 +224,28 @@
           sliderInput += (monthValues.size - 12);
         }
 
-        const currentMonth = [...monthValues][sliderInput - 1];
-        console.log(currentMonth)
+        currentMonth = [...monthValues][sliderInput - 1];
+        // console.log(currentMonth)
 
         // resize the circles with updated month
-        resizeCircles(counters, currentMonth);
-      });
+        resizeCircles(counters);
 
+        // update tooltip
+        makeCounterTooltip(counters);
+      });
+  }
+
+  function makeCounterTooltip(counters) {
+    // update tooltip
+    counters.eachLayer(function (layer) {
+      const props = layer.feature.properties;
+      let value = props[currentMonth];
+      if (!value) {
+        value = "Unavailable"
+      }
+      const popupInfo = `<b>${props["name"]}</b><br>Monthly average: ${value}`;
+      layer.bindPopup(popupInfo);
+    });
   }
 
   function drawParks(data) {
@@ -250,7 +263,7 @@
     // add tooltip
     parks.eachLayer(function (layer) {
       const props = layer.feature.properties;
-      const popupInfo = `<b>${props["name"]}</b>`;
+      let popupInfo = `<b>${props["name"]}</b>`;
       layer.bindPopup(popupInfo);
     });
   }
@@ -274,7 +287,7 @@
     facilities.eachLayer(function (layer) {
       const props = layer.feature.properties;
       // console.log(props);
-      const popupInfo = `<b>${props["type"]}</b>`;
+      let popupInfo = `<b>${props["type"]}</b>`;
       layer.bindPopup(popupInfo);
     });
   }
