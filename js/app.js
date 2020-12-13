@@ -35,7 +35,6 @@
 
   // load points of interest
   $.getJSON("data/poi.geojson", function (data) {
-    console.log(data);
     drawPOI(data);
   });
 
@@ -277,22 +276,21 @@
     // add tooltip
     poi.eachLayer(function (layer) {
       const props = layer.feature.properties;
-      let popupInfo = `<h3 class="txt-bold w240">${props["name"]}</h3>`
-      switch(props["name"]) {
-        case "Anderson Park":
-          popupInfo += `<img src="images/anderson_park.jpg"</img>`;
-          break;
-        case "Fairview Park":
-          popupInfo += `<img src="images/fairview_park.jpg"</img>`;
-          break;
-        case "Hidden Creek Nature Sanctuary":
-          popupInfo += `<img src="images/hidden_creek.jpg"</img>`;
-          break;
-        case "One Normal Plaza":
-          popupInfo += `<img src="images/refuge_food_forest.jpg"</img>`;
-          break;
-        case "Tipton Park":
-          popupInfo += `<img src="images/tipton_park.jpg"</img>`;
+      let popupInfo = `<h3 class="txt-bold">${props["name"]}</h3>`
+      // check for sites which have a photo associated
+      if (props["img"]) {
+        popupInfo +=
+        `
+        <div class="w240">
+          <img class="poi-popup" src="images/${props["img"]}"</img>
+        </div>
+        `;
+      }
+      if (props["desc"]) {
+        popupInfo +=
+        `
+        <p>${props["desc"]}</p>
+        `;
       }
       layer.bindPopup(popupInfo);
     });

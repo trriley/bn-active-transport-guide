@@ -1,3 +1,7 @@
 .legend-large, .legend-small {
-    border-radius: 50%;
+  border-radius: 50%;
+}
+
+img.poi-popup-img {
+  width: 240px;
 }
