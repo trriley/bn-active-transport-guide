@@ -51,8 +51,9 @@
 
       <!-- legend -->
       <div id='legend' class='bg-white round px12 py12 relative'>
-        <h3 class='txt-m txt-bold txt-nowrap mb12 w200'>Monthly Average Trail Users</h3>
-        <div class='legend-circles relative w200'>
+        <h3 class='txt-m txt-bold txt-nowrap w180'>Daily Average Trail Users</h3>
+        <h3 id='current-month' class='txt-m txt-nowrap mb12 w200'></h3>
+        <div class='legend-circles relative w180'>
           <div class="legend-large border border--gray-light absolute"></div>
           <div class="legend-small border border--gray-light absolute"></div>
           <div class="legend-large-label txt-m absolute"></div>
@@ -62,7 +63,6 @@
 
       <!-- ui slider -->
       <div id='slider' class='range w240 bg-white round-ml px12'>
-        <h3 id='slider-label'></h3>
         <input type='range' min="1" , max="12" , value="12" , step="1" />
       </div>
 

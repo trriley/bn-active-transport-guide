@@ -172,7 +172,7 @@
 
     // update slider label with current month
     // TODO need to translate into something more readable
-    $("#slider-label").html(`${expandDate(currentMonth)}`)
+    $("#current-month").html(`${expandDate(currentMonth)}`)
 
   }
 
@@ -244,7 +244,7 @@
         value = "Unavailable"
       }
       value = value.toLocaleString('default', { maximumFractionDigits: 0 });
-      const popupInfo = `<b>${props["name"]}</b><br>Monthly average: ${value}`;
+      const popupInfo = `<b>${props["name"]}</b><br>${expandDate(currentMonth)}: ${value}`;
       layer.bindPopup(popupInfo);
     });
   }
@@ -274,7 +274,24 @@
     // add tooltip
     parks.eachLayer(function (layer) {
       const props = layer.feature.properties;
-      let popupInfo = `<b>${props["name"]}</b>`;
+      console.log(props);
+      let popupInfo = `<h3 class="txt-bold w240">${props["name"]}</h3>`
+      switch(props["name"]) {
+        case "Anderson Park":
+          popupInfo += `<img src="images/anderson_park.jpg"</img>`;
+          break;
+        case "Fairview Park":
+          popupInfo += `<img src="images/fairview_park.jpg"</img>`;
+          break;
+        case "Hidden Creek Nature Sanctuary":
+          popupInfo += `<img src="images/hidden_creek.jpg"</img>`;
+          break;
+        case "One Normal Plaza":
+          popupInfo += `<img src="images/refuge_food_forest.jpg"</img>`;
+          break;
+        case "Tipton Park":
+          popupInfo += `<img src="images/tipton_park.jpg"</img>`;
+      }
       layer.bindPopup(popupInfo);
     });
   }
