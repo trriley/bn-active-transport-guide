@@ -292,7 +292,7 @@
           radius: 2
         });
       }
-    }).addTo(map);
+    });
 
     // add tooltip
     facilities.eachLayer(function (layer) {
@@ -300,6 +300,26 @@
       // console.log(props);
       let popupInfo = `<b>${props["type"]}</b>`;
       layer.bindPopup(popupInfo);
+    });
+
+    // hide facilities layer at lower zoom levels
+    // helps declutter the map
+    map.on('zoomend', function facilitiesZoomEvent() {
+      let zoomLevel = map.getZoom();
+      if (zoomLevel < 13.8) {
+        if (map.hasLayer(facilities)) {
+          map.removeLayer(facilities);
+        } else {
+          console.log("facilities not found")
+        }
+      } else {
+        if (map.hasLayer(facilities)) {
+          console.log("facilities already shown");
+        } else {
+          map.addLayer(facilities);
+        }
+      }
+      console.log(`Current Zoom Level = ${zoomLevel}`)
     });
   }
 })();
