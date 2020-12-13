@@ -33,9 +33,10 @@
     drawLegend(data);
   });
 
-  // load parks
-  $.getJSON("data/parks.geojson", function (data) {
-    drawParks(data);
+  // load points of interest
+  $.getJSON("data/poi.geojson", function (data) {
+    console.log(data);
+    drawPOI(data);
   });
 
   const landmarkIcon = L.icon({
@@ -159,7 +160,9 @@
   function calcRadius(val) {
 
     const radius = Math.sqrt(val / Math.PI);
-    return radius * 1; // adjust number as a scale factor
+    const minimumRadius = 3;
+    const scaleFactor = 1;
+    return (radius * scaleFactor) + minimumRadius;
 
   }
 
@@ -255,15 +258,15 @@
     // console.log(currentMonthSplit[1], currentMonthSplit[0], 1);
     const currentMonthDate = new Date(currentMonthSplit[1], (currentMonthSplit[0]-1))
     // console.log(currentMonthDate);
-    console.log(currentMonthDate.toLocaleString('default', { month: 'short', year: '2-digit' }));
+    // console.log(currentMonthDate.toLocaleString('default', { month: 'short', year: '2-digit' }));
     return currentMonthDate.toLocaleString('default', { month: 'short', year: 'numeric' });
   }
 
-  function drawParks(data) {
+  function drawPOI(data) {
     // TODO need to add popup and mouseover affordance
     // also add in addtl information to geojson file to
     // populate popup
-    const parks = L.geoJSON(data, {
+    const poi = L.geoJSON(data, {
       pointToLayer: function (feature, ll) {
         return L.marker(ll, {
           icon: landmarkIcon
@@ -272,9 +275,8 @@
     }).addTo(map);
 
     // add tooltip
-    parks.eachLayer(function (layer) {
+    poi.eachLayer(function (layer) {
       const props = layer.feature.properties;
-      console.log(props);
       let popupInfo = `<h3 class="txt-bold w240">${props["name"]}</h3>`
       switch(props["name"]) {
         case "Anderson Park":
@@ -327,16 +329,16 @@
         if (map.hasLayer(facilities)) {
           map.removeLayer(facilities);
         } else {
-          console.log("facilities not found")
+          // console.log("facilities not found")
         }
       } else {
         if (map.hasLayer(facilities)) {
-          console.log("facilities already shown");
+          // console.log("facilities already shown");
         } else {
           map.addLayer(facilities);
         }
       }
-      console.log(`Current Zoom Level = ${zoomLevel}`)
+      // console.log(`Current Zoom Level = ${zoomLevel}`)
     });
   }
 })();
