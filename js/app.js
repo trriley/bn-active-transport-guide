@@ -70,10 +70,12 @@
     const counters = L.geoJSON(data, {
       pointToLayer: function (feature, ll) {
         return L.circleMarker(ll, {
-          color: '#653279',
+          color: '#f7f7f5',
+          fillColor: '#653279',
           opacity: 1,
+          fillOpacity: .9,
           weight: 2
-        })
+        });
       }
     }).addTo(map);
 
@@ -304,9 +306,11 @@
     const facilities = L.geoJSON(data, {
       pointToLayer: function (feature, ll) {
         return L.circleMarker(ll, {
-          color: '#53565A',
+          color: '#f7f7f5',
+          fillColor: '#53565A',
           fillOpacity: 1,
-          radius: 2
+          radius: 3,
+          weight: 1
         });
       }
     });
