@@ -38,8 +38,18 @@
     drawPOI(data);
   });
 
-  const landmarkIcon = L.icon({
+  const parkIcon = L.icon({
     iconUrl: 'icons/noun_landmark_2181603_green.svg',
+    iconSize: [30, 30]
+  });
+
+  const transitIcon = L.icon({
+    iconUrl: 'icons/noun_Bus_2558229.svg',
+    iconSize: [30, 30]
+  });
+
+  const defaultIcon = L.icon({
+    iconUrl: 'icons/noun_landmark_2181603.svg',
     iconSize: [30, 30]
   });
 
@@ -269,9 +279,23 @@
     // populate popup
     const poi = L.geoJSON(data, {
       pointToLayer: function (feature, ll) {
-        return L.marker(ll, {
-          icon: landmarkIcon
-        });
+        const type = feature.properties.type;
+        switch(type) {
+          case "park":
+            return L.marker(ll, {
+              icon: parkIcon
+            });
+            break;
+          case "service":
+            return L.marker(ll, {
+              icon: defaultIcon
+            });
+            break;
+          case "transit":
+            return L.marker(ll, {
+              icon: transitIcon
+            });
+        }
       }
     }).addTo(map);
 
