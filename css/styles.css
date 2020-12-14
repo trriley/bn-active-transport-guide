@@ -5,3 +5,7 @@
 img.poi-popup {
   width: 240px;
 }
+
+.border--green-trail {
+  border-color: "#658d1b";
+}
