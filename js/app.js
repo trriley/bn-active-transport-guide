@@ -19,13 +19,6 @@
   let infoToggle = false;
   let legendToggle = false;
 
-  // detect small screen
-  const mediaSizeQuery = window.matchMedia('(min-width: 800px)');
-  // attempt to detect touchscreens and alter the mouseover events
-  // does not appear to work currently
-  // https://stackoverflow.com/questions/56324813/how-to-detect-touch-device-in-2019
-  const mediaTouchQuery = matchMedia('(hover: none) and (pointer: coarse)');
-
   // request a mapbox raster tile layer and add to map
   L.tileLayer('https://api.mapbox.com/styles/v1/trrile1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
@@ -65,28 +58,6 @@
     iconSize: [30, 30]
   });
 
-  // create Leaflet control for the legend
-  const legendControl = L.control({
-    position: 'bottomright'
-  });
-
-  // when the control is added to the map
-  legendControl.onAdd = function (map) {
-
-    // select the legend using id attribute of legend
-    const legend = L.DomUtil.get("legend");
-
-    // disable scroll and click functionality
-    L.DomEvent.disableScrollPropagation(legend);
-    L.DomEvent.disableClickPropagation(legend);
-
-    // return the selection
-    return legend;
-
-  }
-
-  legendControl.addTo(map);
-
 
   function drawCounters(data) {
     const counters = L.geoJSON(data, {
@@ -116,6 +87,32 @@
   }
 
   function drawLegend(data) {
+    // detect medium screen
+    const mediaSizeQueryMedium = window.matchMedia('(min-width: 800px)');
+    // detect small screen
+    const mediaSizeQuerySmall = window.matchMedia('(min-width: 640px)');
+
+    // create Leaflet control for the legend
+    const legendControl = L.control({
+      position: mediaSizeQuerySmall.matches ? 'bottomright': 'topright'
+    });
+
+    // when the control is added to the map
+    legendControl.onAdd = function (map) {
+
+      // select the legend using id attribute of legend
+      const legend = L.DomUtil.get("legend");
+
+      // disable scroll and click functionality
+      L.DomEvent.disableScrollPropagation(legend);
+      L.DomEvent.disableClickPropagation(legend);
+
+      // return the selection
+      return legend;
+
+    }
+
+    legendControl.addTo(map);
 
     // empty array to hold values
     const dataValues = [];
@@ -203,6 +200,11 @@
 
   function sequenceUI(counters) {
 
+    // detect medium screen
+    const mediaSizeQueryMedium = window.matchMedia('(min-width: 800px)');
+    // detect small screen
+    const mediaSizeQuerySmall = window.matchMedia('(min-width: 640px)');
+
     // get DOM elements that will be modified by UI
     const infoPanelDOM = document.getElementById('info');
     const infoIconDOM = document.getElementById('info-icon');
@@ -225,7 +227,7 @@
 
     // create Leaflet control for the slider
     const sliderControl = L.control({
-      position: 'bottomleft'
+      position: mediaSizeQuerySmall.matches ? 'bottomleft' : 'bottomright'
     });
 
     sliderControl.onAdd = function (map) {
@@ -302,7 +304,7 @@
             // infoIconDOM.style.fill = 'currentColor'; // gray button
             // infoPanelDOM.style.visibility = 'visible';
             infoPanelDOM.style.display = 'block';
-            if (!mediaSizeQuery.matches) {
+            if (!mediaSizeQueryMedium.matches) {
               mapDOM.classList.toggle('viewport-twothirds');
               mapDOM.classList.toggle('viewport-full');
             }
@@ -310,7 +312,7 @@
             // infoIconDOM.style.fill = 'rgba(146, 146, 239, 0.8)'; // blue button
             // infoPanelDOM.style.visibility = 'hidden';
             infoPanelDOM.style.display = 'none';
-            if (!mediaSizeQuery.matches) {
+            if (!mediaSizeQueryMedium.matches) {
               mapDOM.classList.toggle('viewport-twothirds');
               mapDOM.classList.toggle('viewport-full');
             }
