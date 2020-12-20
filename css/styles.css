@@ -9,3 +9,21 @@ img.poi-popup {
 .border--green-trail {
   border-color: "#658d1b";
 }
+
+#info-icon {
+    cursor: pointer;
+    pointer-events: auto;
+}
+
+@keyframes highlight {
+    0% {
+        fill: #ffffff;
+    }
+    100% {
+        fill: 'currentColor';
+    }
+}
+
+.highlight {
+  animation: highlight 2s;
+}

@@ -6,13 +6,25 @@
     zoom: 12,
     minZoom: 10,
     maxZoom: 15,
-    maxBounds: L.latLngBounds([40.2, -89.2], [40.7, -88.7])
+    maxBounds: L.latLngBounds([40.2, -89.2], [40.7, -88.7]),
+    zoomControl: false
   });
 
   const accessToken = 'pk.eyJ1IjoidHJyaWxlMSIsImEiOiJja2ljOWtranEwM2xvMnhrODVpcjZuM2t4In0.l8PybKD_NV7k9Fv4LaXOVQ';
 
   // define currentMonth as a global variable
   let currentMonth = '11_2020';
+
+  // initialize UI element tracker variables
+  let infoToggle = false;
+  let legendToggle = false;
+
+  // detect small screen
+  const mediaSizeQuery = window.matchMedia('(min-width: 800px)');
+  // attempt to detect touchscreens and alter the mouseover events
+  // does not appear to work currently
+  // https://stackoverflow.com/questions/56324813/how-to-detect-touch-device-in-2019
+  const mediaTouchQuery = matchMedia('(hover: none) and (pointer: coarse)');
 
   // request a mapbox raster tile layer and add to map
   L.tileLayer('https://api.mapbox.com/styles/v1/trrile1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
@@ -184,13 +196,19 @@
       layer.setRadius(radius);
     });
 
-    // update slider label with current month
-    // TODO need to translate into something more readable
-    $("#current-month").html(`${expandDate(currentMonth)}`)
+    $("#current-month-legend").html(`${expandDate(currentMonth)}`)
+    $("#current-month-slider").html(`${expandDate(currentMonth)}`)
 
   }
 
   function sequenceUI(counters) {
+
+    // get DOM elements that will be modified by UI
+    const infoPanelDOM = document.getElementById('info');
+    const infoIconDOM = document.getElementById('info-icon');
+    const legendIconDOM = document.getElementById('legend-icon');
+    const mapDOM = document.getElementById('map');
+    const legendDOM = document.getElementById('legend');
 
     // use Set object instead of array to avoid duplicate values
     const monthValues = new Set();
@@ -212,7 +230,7 @@
 
     sliderControl.onAdd = function (map) {
 
-      const controls = L.DomUtil.get("slider");
+      const controls = L.DomUtil.get("slider-container");
 
       L.DomEvent.disableScrollPropagation(controls);
       L.DomEvent.disableClickPropagation(controls);
@@ -247,6 +265,103 @@
         // update tooltip
         makeCounterTooltip(counters);
       });
+
+    // add info button to map
+    const infoButtonControl = L.control({
+      position: 'topleft'
+    });
+
+    infoButtonControl.onAdd = function (map) {
+
+      const controls = L.DomUtil.get("info-button");
+
+      L.DomEvent.disableScrollPropagation(controls);
+      L.DomEvent.disableClickPropagation(controls);
+
+      return controls;
+
+    }
+
+    infoButtonControl.addTo(map);
+
+    $('#info-button')
+      .on('mouseover', function () {
+        if (mediaTouchQuery.matches) {
+          infoIconDOM.classList.toggle('highlight');
+        } else {
+          infoIconDOM.style.fill = 'rgba(255, 255, 255)';
+        }
+      })
+      .on('mouseout', function () {
+        if (!mediaTouchQuery.matches) {
+          infoIconDOM.style.fill = 'currentColor'; // gray button
+        }
+      })
+      .on('click', function () {
+        if (infoToggle) {
+            // infoIconDOM.style.fill = 'currentColor'; // gray button
+            // infoPanelDOM.style.visibility = 'visible';
+            infoPanelDOM.style.display = 'block';
+            if (!mediaSizeQuery.matches) {
+              mapDOM.classList.toggle('viewport-twothirds');
+              mapDOM.classList.toggle('viewport-full');
+            }
+        } else {
+            // infoIconDOM.style.fill = 'rgba(146, 146, 239, 0.8)'; // blue button
+            // infoPanelDOM.style.visibility = 'hidden';
+            infoPanelDOM.style.display = 'none';
+            if (!mediaSizeQuery.matches) {
+              mapDOM.classList.toggle('viewport-twothirds');
+              mapDOM.classList.toggle('viewport-full');
+            }
+        }
+        infoToggle = !infoToggle
+      });
+
+    // add legend toggle button to map
+    const legendButtonControl = L.control({
+      position: 'topleft'
+    });
+
+    legendButtonControl.onAdd = function (map) {
+
+      const controls = L.DomUtil.get('legend-button');
+
+      L.DomEvent.disableScrollPropagation(controls);
+      L.DomEvent.disableClickPropagation(controls);
+
+      return controls;
+
+    }
+
+    legendButtonControl.addTo(map);
+
+    $('#legend-button')
+      .on('mouseover', function () {
+        if (mediaTouchQuery.matches) {
+          legendIconDOM.classList.toggle('highlight');
+        } else {
+          legendIconDOM.style.fill = 'rgba(255, 255, 255)';
+        }
+      })
+      .on('mouseout', function () {
+        if (!mediaTouchQuery.matches) {
+          legendIconDOM.style.fill = 'currentColor'; // gray button
+        }
+      })
+      .on('click', function () {
+        if (legendToggle) {
+            // infoIconDOM.style.fill = 'currentColor'; // gray button
+            // infoPanelDOM.style.visibility = 'visible';
+            legendDOM.style.display = 'block';
+        } else {
+            // infoIconDOM.style.fill = 'rgba(146, 146, 239, 0.8)'; // blue button
+            // infoPanelDOM.style.visibility = 'hidden';
+            legendDOM.style.display = 'none';
+        }
+        legendToggle = !legendToggle
+      });
+
   }
 
   function makeCounterTooltip(counters) {

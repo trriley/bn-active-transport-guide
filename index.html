@@ -15,7 +15,8 @@
 
 <body>
   <div class='flex-parent viewport-full relative scroll-hidden'>
-    <div class='flex-child w-full w300-ml absolute static-ml left bottom'>
+    <!-- map info window -->
+    <div id='info' class='flex-child w-full w300-ml absolute static-ml left bottom'>
       <div class='flex-parent flex-parent--column viewport-third h-full-ml hmax-full bg-white py18 px12'>
         <div class='flex-child flex-child--grow px12 py12 scroll-auto'>
           <h2 class='txt-h2 mb6'>BN Active Transportation Guide</h1>
@@ -51,9 +52,9 @@
       <div id="map" class='viewport-twothirds viewport-full-ml'></div>
 
       <!-- legend -->
-      <div id='legend' class='bg-white round px12 py12 relative'>
+      <div id='legend' class='bg-white round px12 py6 relative'>
         <h3 class='txt-m txt-bold txt-nowrap'>Daily Average Trail Users</h3>
-        <h3 id='current-month' class='txt-m txt-nowrap mb12'></h3>
+        <h3 id='current-month-legend' class='txt-m txt-nowrap mb12'></h3>
         <div class='legend-circles mb12 relative w180'>
           <div class="legend-large border border--gray-light absolute"></div>
           <div class="legend-small border border--gray-light absolute"></div>
@@ -78,13 +79,26 @@
       </div>
 
       <!-- ui slider -->
-      <div id='slider' class='range w240 bg-white round-ml px12'>
-        <input type='range' min="1" , max="12" , value="12" , step="1" />
+      <div id='slider-container' class='bg-white round mb24 px12 py6 relative'>
+        <h3 id='current-month-slider' class='txt-m txt-bold txt-nowrap'></h3>
+        <div id='slider' class='range w240'>
+          <input type='range' min="1" , max="12" , value="12" , step="1" />
+        </div>
       </div>
 
+      <!-- map info toggle button -->
+      <button id="info-button">
+        <svg id="info-icon" class='icon h24 w24'><use xlink:href='#icon-info'/></svg>
+      </button>
+
+      <!-- legend toggle button -->
+      <button id="legend-button">
+        <svg id="legend-icon" class='icon h24 w24'><use xlink:href='#icon-layers'/></svg>
+      </button>
+
       <!-- ui info panel -->
-      <div id='info' class='py6 px12 bg-white border border--gray-light round fixed w240'>
-      </div>
+      <!-- <div id='info' class='py6 px12 bg-white border border--gray-light round fixed w240'>
+      </div> -->
     </div>
   </div>
   <script async defer src="https://api.mapbox.com/mapbox-assembly/v0.24.0/assembly.js"></script>
