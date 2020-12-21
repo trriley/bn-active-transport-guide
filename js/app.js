@@ -43,6 +43,7 @@
     drawPOI(data);
   });
 
+  // load icons
   const parkIcon = L.icon({
     iconUrl: 'icons/noun_landmark_2181603_green.svg',
     iconSize: [30, 30]
@@ -58,6 +59,25 @@
     iconSize: [30, 30]
   });
 
+  const restroomIcon = L.icon({
+    iconUrl: 'icons/restrooms-black-14.svg',
+    iconSize: [14, 14]
+  });
+
+  const bikeRackIcon = L.icon({
+    iconUrl: 'icons/bike-rack-black-14.svg',
+    iconSize: [14, 14]
+  });
+
+  const bikeFixIcon = L.icon({
+    iconUrl: 'icons/bike-repairs-black-14.svg',
+    iconSize: [14, 14]
+  });
+
+  const bikeShareIcon = L.icon({
+    iconUrl: 'icons/bike-rental-black-14.svg',
+    iconSize: [14, 14]
+  });
 
   function drawCounters(data) {
     const counters = L.geoJSON(data, {
@@ -399,19 +419,13 @@
         const type = feature.properties.type;
         switch(type) {
           case "park":
-            return L.marker(ll, {
-              icon: parkIcon
-            });
+            return L.marker(ll, { icon: parkIcon });
             break;
           case "service":
-            return L.marker(ll, {
-              icon: defaultIcon
-            });
+            return L.marker(ll, { icon: defaultIcon });
             break;
           case "transit":
-            return L.marker(ll, {
-              icon: transitIcon
-            });
+            return L.marker(ll, { icon: transitIcon });
         }
       }
     }).addTo(map);
@@ -446,13 +460,20 @@
     // zoom levels
     const facilities = L.geoJSON(data, {
       pointToLayer: function (feature, ll) {
-        return L.circleMarker(ll, {
-          color: '#f7f7f5',
-          fillColor: '#53565A',
-          fillOpacity: 1,
-          radius: 3,
-          weight: 1
-        });
+        const type = feature.properties.type;
+        switch(type) {
+          case "Restroom":
+            return L.marker(ll, { icon: restroomIcon });
+            break;
+          case "Bike Rack":
+            return L.marker(ll, { icon: bikeRackIcon });
+            break;
+          case "Bike Share 309 Stations":
+            return L.marker(ll, { icon: bikeShareIcon });
+            break;
+          case "Fix-It Station":
+            return L.marker(ll, { icon: bikeFixIcon });
+        }
       }
     });
 
