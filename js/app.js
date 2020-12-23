@@ -237,7 +237,7 @@
 
     counters.eachLayer(function (layer) {
       for (prop in layer.feature.properties) {
-        if (prop != 'name') {
+        if (prop != 'name' & prop != 'longName') {
           monthValues.add(prop);
         }
       }
@@ -308,16 +308,10 @@
 
     $('#info-button')
       .on('mouseover', function () {
-        if (mediaTouchQuery.matches) {
-          infoIconDOM.classList.toggle('highlight');
-        } else {
           infoIconDOM.style.fill = 'rgba(255, 255, 255)';
-        }
       })
       .on('mouseout', function () {
-        if (!mediaTouchQuery.matches) {
           infoIconDOM.style.fill = 'currentColor'; // gray button
-        }
       })
       .on('click', function () {
         if (infoToggle) {
@@ -360,16 +354,10 @@
 
     $('#legend-button')
       .on('mouseover', function () {
-        if (mediaTouchQuery.matches) {
-          legendIconDOM.classList.toggle('highlight');
-        } else {
-          legendIconDOM.style.fill = 'rgba(255, 255, 255)';
-        }
+        legendIconDOM.style.fill = 'rgba(255, 255, 255)';
       })
       .on('mouseout', function () {
-        if (!mediaTouchQuery.matches) {
-          legendIconDOM.style.fill = 'currentColor'; // gray button
-        }
+        legendIconDOM.style.fill = 'currentColor'; // gray button
       })
       .on('click', function () {
         if (legendToggle) {
@@ -395,7 +383,7 @@
         value = "Unavailable"
       }
       value = value.toLocaleString('default', { maximumFractionDigits: 0 });
-      const popupInfo = `<b>${props["name"]}</b><br>${expandDate(currentMonth)}: ${value}`;
+      const popupInfo = `<b>${props["longName"]}</b><br>${expandDate(currentMonth)} average: ${value}`;
       layer.bindPopup(popupInfo);
     });
   }

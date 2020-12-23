@@ -1,5 +1,17 @@
 .legend-large, .legend-small {
   border-radius: 50%;
+  border-color: #f7f7f5;
+  border-width: 2px;
+  background-color: rgb(101, 50, 121);
+}
+
+hr.small, hr.large {
+  width: 65px;
+  position: absolute;
+  top: -8px;
+  left: 30px;
+  border: 1px dashed #ccc;     /* overwrite assembly.css rule */
+  margin-top: 8px;            /* overwrite assembly.css rule */
 }
 
 img.poi-popup {
@@ -7,7 +19,7 @@ img.poi-popup {
 }
 
 .border--green-trail {
-  border-color: "#658d1b";
+  border-color: #658d1b;
 }
 
 #info-icon {
@@ -15,7 +27,7 @@ img.poi-popup {
     pointer-events: auto;
 }
 
-@keyframes highlight {
+/* @keyframes highlight {
     0% {
         fill: #ffffff;
     }
@@ -26,4 +38,4 @@ img.poi-popup {
 
 .highlight {
   animation: highlight 2s;
-}
+} */
